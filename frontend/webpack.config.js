@@ -2,7 +2,7 @@ const path = require("path");
 const webpack = require("webpack");
 
 module.exports = {
-  entry: "/Users/janice/Desktop/django react tutorial/controller/frontend/src/index.js",
+  entry: "./src/index.js",
   output: {
     path: path.resolve(__dirname, "./static/frontend"),
     filename: "[name].js",
@@ -23,7 +23,10 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin({
-        'process.env.NODE_ENV' : JSON.stringify('production')
+        'process.env.NODE_ENV' : {
+          // This has effect on the react lib size
+        NODE_ENV: JSON.stringify("production"),
+        },
     }),
   ],
 };
