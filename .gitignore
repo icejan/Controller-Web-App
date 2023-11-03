@@ -1,5 +1,6 @@
 
 .DS_Store
-frontend/__pycache__/urls.cpython-310.pyc
+frontend/__pycache__
 db.sqlite3
-db.sqlite3
+api/__pycache__
+api/migrations

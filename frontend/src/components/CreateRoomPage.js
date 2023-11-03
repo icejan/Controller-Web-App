@@ -56,8 +56,8 @@ function CreateRoomPage (props) {
                     </FormHelperText>
                     <RadioGroup 
                         row 
-                        defaultValue={defaultVotes} 
-                        onChange={handleVotesChange}
+                        defaultValue="true" 
+                        onChange={handleGuestCanPauseChange}
                     >
                         <FormControlLabel 
                             value="true" 

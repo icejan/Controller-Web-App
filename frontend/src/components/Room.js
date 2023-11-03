@@ -1,21 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from "react-router-dom";
 
-function withParams(Component){
-    return props => <Component {...props} params={useParams()}/>;
-}
-
 function Room (props) {
-    const[roomCode, setRoomCode] = useState(props.match.params.roomCode)
+    
     const initialState = {
         votesToSkip: 2,
-        guestCanPause: false,
+        guestCanPause: true,
         isHost: false,
     }
     const [roomData, setRoomData] = useState(initialState) 
+    const{ roomCode } = useParams();
 
     useEffect(() => {
-        fetch("/api/create-room" + "?code="+ roomCode)
+        fetch("/api/get-room" + "?code="+ roomCode)
         .then(res => res.json())
         .then(data =>{
             setRoomData({
@@ -25,16 +22,17 @@ function Room (props) {
                 isHost: data.is_host,
             })  
         })
-    },[roomCode, setRoomCode])
-}
+    })
 
     return (
         <div>
-            <h3>{roomCode}</h3>
+            <h3>Room Code: {roomCode}</h3>
             <p>Votes: {roomData.votesToSkip}</p>
             <p>Guest can pause: {roomData.guestCanPause.toString()}</p>
             <p>Host: {roomData.isHost.toString()}</p>
         </div>
     );
+}
+
 
 export default Room;
