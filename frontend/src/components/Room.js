@@ -5,30 +5,29 @@ function withParams(Component){
     return props => <Component {...props} params={useParams()}/>;
 }
 
-export default class Room (props) {
+function Room (props) {
+    const[roomCode, setRoomCode] = useState(props.match.params.roomCode)
     const initialState = {
         votesToSkip: 2,
         guestCanPause: false,
         isHost: false,
     }
-}
-    
-
     const [roomData, setRoomData] = useState(initialState) 
-    const {roomCode} = useParams()
 
-    getRoomDetails(() => {
+    useEffect(() => {
         fetch("/api/create-room" + "?code="+ roomCode)
         .then(res => res.json())
         .then(data =>{
             setRoomData({
-                roomData,
+                ...roomData,
                 votesToSkip: data.votes_to_skip,
                 guestCanPause: data.guest_can_pause,
                 isHost: data.is_host,
             })  
         })
-    },[roomCode,setRoomData])
+    },[roomCode, setRoomCode])
+}
+
     return (
         <div>
             <h3>{roomCode}</h3>
@@ -37,3 +36,5 @@ export default class Room (props) {
             <p>Host: {roomData.isHost.toString()}</p>
         </div>
     );
+
+export default Room;

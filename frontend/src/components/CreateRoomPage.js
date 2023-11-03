@@ -10,36 +10,36 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 
-export default function CreateRoomPage (props) {
-    var defaultVotes = 2;
-
-    const [votes_to_skip,votesToSkip] = useState({votesToSkip: defaultVotes});
-    const [guest_can_pause,guestCanPause] = useState({guestCanPause: true});
-
+function CreateRoomPage (props) {
+    
+    const [defaultVotes, setDefaultVotes] = useState(2);
     const navigate = useNavigate();
 
-    const handleVotesChange = (e) => {
-            votesToSkip (e.target.value);
+    const [votesToSkip,setVotesToSkip] = useState(defaultVotes);
+    const [guestCanPause,setGuestCanPause] = useState(true);
+
+    const handleVotesChange = () => {
+            setVotesToSkip (event.target.value);
     };
 
-    const handleGuestCanPauseChange = (e) => {
-            guestCanPause (e.target.value === "true" ? true : false);
-    };
-
-    const requestOptions = {
-        method: "POST",
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            votes_to_skip: votesToSkip,
-            guest_can_pause: guestCanPause,
-        })
+    const handleGuestCanPauseChange = () => {
+            setGuestCanPause (event.target.value === "true" ? true : false);
     };
 
     const handleRoomButtonPressed = () => {
-        console.log(requestOptions)
+        console.log('Test');
+        const requestOptions = {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                votes_to_skip: votesToSkip,
+                guest_can_pause: guestCanPause,
+            })
+        };
+        console.log('Test2');
         fetch("/api/create-room", requestOptions)
             .then((response) => response.json())
-            .then((data) => this.props.navigate('/room/'+ data.code));
+            .then((data) => navigate('/room/'+ data.code));
     };
 
     return (  
@@ -56,9 +56,8 @@ export default function CreateRoomPage (props) {
                     </FormHelperText>
                     <RadioGroup 
                         row 
-                        defaultValue="true" 
+                        defaultValue={defaultVotes} 
                         onChange={handleVotesChange}
-                        onClick={handleGuestCanPauseChange}
                     >
                         <FormControlLabel 
                             value="true" 
@@ -109,3 +108,4 @@ export default function CreateRoomPage (props) {
     
 };
 
+export default CreateRoomPage;
