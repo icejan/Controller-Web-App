@@ -2,13 +2,12 @@ import React, { Component } from "react";
 import { render } from "react-dom";
 import HomePage from "./HomePage";
 
-
 function App (props) {
-    
+
     return (
-    <div>
-        <HomePage />
-    </div>
+        <div className="center">
+            <HomePage />
+        </div>
     );
 }
 
