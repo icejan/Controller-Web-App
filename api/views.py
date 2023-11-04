@@ -26,7 +26,9 @@ class GetRoom(APIView):
             return Response({'Room Not Found': 'Invalid Room Code.'}, status=status.HTTP_404_NOT_FOUND)
         
         return Response({'Bad Request': 'Code parameter not found in request'}, status=status.HTTP_400_BAD_REQUEST)
-    
+
+
+
 class CreateRoomView(APIView):
     serializer_class = CreateRoomSerializer
 
