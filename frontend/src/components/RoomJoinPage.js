@@ -1,8 +1,10 @@
 import React, { Component, useState } from 'react';
 import { TextField, Button, Grid, Typography} from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 
 function RoomJoinPage (props) {
+
+    const navigate = useNavigate();
 
     const [roomCode, setRoomCode] = useState("");
     const [error, setError] = useState("");
@@ -12,7 +14,23 @@ function RoomJoinPage (props) {
     }
 
     const roomButtonPressed = () => {
-        console.log(roomCode)
+        const requestOptions = {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                code: roomCode,
+            })
+        };
+        fetch("/api/join-room", requestOptions)
+            .then((response) => {
+                if (response.ok){
+                    navigate('/room/'+ roomCode)
+                } else {
+                    setError("Room Not Found.")
+                }
+            }).catch((error) => {
+                console.log(error);
+            });
     }
 
     return <Grid container spacing={1} align="center">
