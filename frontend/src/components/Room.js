@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { Grid, Button, Typography}  from "@mui/material";
+import CreateRoomPage from './CreateRoomPage';
 
 function Room (props) {
     
@@ -10,6 +11,7 @@ function Room (props) {
         votesToSkip: 2,
         guestCanPause: true,
         isHost: false,
+        showSettings: false,
     }
     const [roomData, setRoomData] = useState(initialState) 
     const{ roomCode } = useParams();
@@ -30,7 +32,7 @@ function Room (props) {
                 isHost: data.is_host,
             })  
         })
-    })
+    },[])
 
     const leaveButtonPressed = () => {
         //console.log('Test');
@@ -44,7 +46,60 @@ function Room (props) {
                 navigate('/');
             });
     }
+
+    const UpdateShowSettings = {
+        showSettings (value) {
+            setRoomData({showSettings: value})
+        }
+        
+    }
+
+    const renderSettings = {
+        settings() {
+            return (
+                <Grid container spacing={1} align="center">
+                    <Grid item xs={12}>
+                        <CreateRoomPage 
+                            update={true} 
+                            votesToSkip={roomData.votesToSkip} 
+                            guestCanPause={roomData.guestCanPause}
+                            roomCode={roomCode}
+                            
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Button 
+                            variant="contained" 
+                            color="secondary" 
+                            onClick={() => UpdateShowSettings.showSettings(false)}>
+                            Close
+                        </Button>
+                    </Grid>
+                </Grid>
+            );
+        }
+    };
     
+    const renderSettingsButton = {
+        settingsButton() {
+            return (
+                <Grid item xs={12}>
+                    <Button variant="contained" color="primary" onClick={() => UpdateShowSettings.showSettings(true)}>
+                        Settings
+                    </Button>
+                </Grid>
+            );
+        }
+    };
+    
+    console.log('showsettings: '+ roomData.showSettings)
+
+    console.log('votes: '+ roomData.votesToSkip)
+    console.log('guest can pause: '+ roomData.guestCanPause)
+
+    if (roomData.showSettings){
+        return renderSettings.settings();
+    }
     return (
         <Grid container spacing={1} align="center">
             <Grid item xs={12}>
@@ -67,6 +122,7 @@ function Room (props) {
                     Host: {roomData.isHost.toString()}
                 </Typography>
             </Grid>
+            {roomData.isHost ? renderSettingsButton.settingsButton() : null}
             <Grid item xs={12}>
                 <Button variant="contained" color="secondary" onClick={leaveButtonPressed}>
                     Leave Room

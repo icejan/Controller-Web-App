@@ -1,22 +1,16 @@
 
 .DS_Store
 api/__pycache__
-api/migrations
 
 controller/__pycache__
 
 frontend/__pycache__
-frontend/migrations
+
 frontend/node_modules
-frontend/package-config.json
-frontend/package.json
-frontend/webpack.config.js
 
 node_modules
 db.sqlite3
 manage.py
-package-lock.json
-package.json
 
 db.sqlite3
 db.sqlite3
@@ -35,5 +29,7 @@ db.sqlite3
 frontend/static/frontend/main.js
 *.pyc
 api/__pycache__/urls.cpython-310.pyc
+api/__pycache__/views.cpython-310.pyc
+db.sqlite3
 api/__pycache__/views.cpython-310.pyc
 db.sqlite3

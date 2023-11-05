@@ -18,6 +18,9 @@ function CreateRoomPage (props) {
     const [votesToSkip,setVotesToSkip] = useState(defaultVotes);
     const [guestCanPause,setGuestCanPause] = useState(true);
 
+    const [update, setUpdate] = useState(false);
+    const [roomCode, setRoomCode] = useState(null);
+
     const handleVotesChange = () => {
             setVotesToSkip (event.target.value);
     };
@@ -39,7 +42,7 @@ function CreateRoomPage (props) {
         console.log('Test2');
         fetch("/api/create-room", requestOptions)
             .then((response) => response.json())
-            .then((data) => navigate('/room/'+ data.code));
+            .then((data) => {setRoomCode(data.code), navigate('/room/'+ data.code)});
     };
 
     return (  
