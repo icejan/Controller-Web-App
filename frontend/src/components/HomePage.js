@@ -19,6 +19,10 @@ function HomePage (props) {
     //const navigate = useNavigate();
     const [roomCode, setRoomCode] = useState(null);
 
+    const clearRoomCode = {
+        roomCode: null,
+    }
+
     useEffect(() => {
         async function autoEnter() {
             fetch('api/user-in-room')
@@ -44,7 +48,7 @@ function HomePage (props) {
                         </Typography>
                     </Grid>
                     <Grid item xs={12} align="center">
-                        <ButtonGroup disabledelevation variant="contained" color="primary">
+                        <ButtonGroup disableElevation variant="contained" color="primary">
                             <Button color="primary" to='/join' component={ Link }>
                                 Join a Room
                             </Button>

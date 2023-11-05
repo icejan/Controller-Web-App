@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { Grid, Button, Typography}  from "@mui/material";
 
 function Room (props) {
     
+    const navigate = useNavigate();
+
     const initialState = {
         votesToSkip: 2,
         guestCanPause: true,
@@ -13,7 +16,12 @@ function Room (props) {
 
     useEffect(() => {
         fetch("/api/get-room" + "?code="+ roomCode)
-        .then(res => res.json())
+        .then((response) => {
+            if (!response.ok) {
+                navigate('/');
+            }
+            return response.json()
+        })
         .then(data =>{
             setRoomData({
                 ...roomData,
@@ -24,15 +32,49 @@ function Room (props) {
         })
     })
 
+    const leaveButtonPressed = () => {
+        //console.log('Test');
+        const requestOptions = {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' }
+        };
+        //console.log('Test2');
+        fetch("/api/leave-room", requestOptions)
+            .then((_response) => {
+                navigate('/');
+            });
+    }
+    
     return (
-        <div>
-            <h3>Room Code: {roomCode}</h3>
-            <p>Votes: {roomData.votesToSkip}</p>
-            <p>Guest can pause: {roomData.guestCanPause.toString()}</p>
-            <p>Host: {roomData.isHost.toString()}</p>
-        </div>
+        <Grid container spacing={1} align="center">
+            <Grid item xs={12}>
+                <Typography variant="h4" component="h4">
+                    Code: {roomCode}
+                </Typography>
+            </Grid>
+            <Grid item xs={12}>
+                <Typography variant="h5" component="h5">
+                    Votes: {roomData.votesToSkip}
+                </Typography>
+            </Grid>
+            <Grid item xs={12}>
+                <Typography variant="h5" component="h5">
+                    Guest can pause: {roomData.guestCanPause.toString()}
+                </Typography>
+            </Grid>
+            <Grid item xs={12}>
+                <Typography variant="h5" component="h5">
+                    Host: {roomData.isHost.toString()}
+                </Typography>
+            </Grid>
+            <Grid item xs={12}>
+                <Button variant="contained" color="secondary" onClick={leaveButtonPressed}>
+                    Leave Room
+                </Button>
+            </Grid>
+        </Grid>
+        
     );
 }
-
 
 export default Room;
