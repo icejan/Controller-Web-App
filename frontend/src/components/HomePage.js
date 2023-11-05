@@ -19,10 +19,6 @@ function HomePage (props) {
     //const navigate = useNavigate();
     const [roomCode, setRoomCode] = useState(null);
 
-    const clearRoomCode = {
-        roomCode: null,
-    }
-
     useEffect(() => {
         async function autoEnter() {
             fetch('api/user-in-room')
