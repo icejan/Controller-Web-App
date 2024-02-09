@@ -11,15 +11,24 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 
 function CreateRoomPage (props) {
-    
-    const [defaultVotes, setDefaultVotes] = useState(2);
+    //{votesToSkip=2, guestCanPause=true, update=false, roomCode=null,updateCallback = () => {} }
+    const defaultProps = {
+        votesToSkip: 2,
+        guestCanPause: true,
+        update: false,
+        roomCode: null,
+        updateCallback: () => {},
+    }
+
+    //const [defaultVotes, setDefaultVotes] = useState(2);
     const navigate = useNavigate();
 
-    const [votesToSkip,setVotesToSkip] = useState(defaultVotes);
-    const [guestCanPause,setGuestCanPause] = useState(true);
+    
+    const [votesToSkip,setVotesToSkip] = useState(defaultProps.votesToSkip);
+    const [guestCanPause,setGuestCanPause] = useState(defaultProps.guestCanPause);
 
-    const [update, setUpdate] = useState(false);
-    const [roomCode, setRoomCode] = useState(null);
+    const [update, setUpdate] = useState(defaultProps.update);
+    const [roomCode, setRoomCode] = useState(defaultProps.roomCode);
 
     const handleVotesChange = () => {
             setVotesToSkip (event.target.value);
@@ -45,11 +54,13 @@ function CreateRoomPage (props) {
             .then((data) => {setRoomCode(data.code), navigate('/room/'+ data.code)});
     };
 
+    const title = props.update ? "Update Room" : "Create a Room";
+    
     return (  
         <Grid container spacing={1}>
             <Grid item xs={12} align="center">
                 <Typography component='h4' variant='h4'>
-                    Create A Room
+                    {title}
                 </Typography>
             </Grid>
             <Grid item xs={12} align="center">
@@ -59,7 +70,7 @@ function CreateRoomPage (props) {
                     </FormHelperText>
                     <RadioGroup 
                         row 
-                        defaultValue="true" 
+                        defaultValue={defaultProps.guestCanPause} 
                         onChange={handleGuestCanPauseChange}
                     >
                         <FormControlLabel 
@@ -83,7 +94,7 @@ function CreateRoomPage (props) {
                         required={true} 
                         type="number" 
                         onChange={handleVotesChange}
-                        defaultValue={defaultVotes}
+                        defaultValue={defaultProps.votesToSkip}
                         inputProps={{
                             min: 1,
                             style: {textAlign: "center"},

@@ -16,7 +16,7 @@ function Room (props) {
     const [roomData, setRoomData] = useState(initialState) 
     const{ roomCode } = useParams();
 
-    useEffect(() => {
+    const generate = () => {
         fetch("/api/get-room" + "?code="+ roomCode)
         .then((response) => {
             if (!response.ok) {
@@ -30,8 +30,13 @@ function Room (props) {
                 votesToSkip: data.votes_to_skip,
                 guestCanPause: data.guest_can_pause,
                 isHost: data.is_host,
+                showSettings: false,
             })  
         })
+        
+    }
+    useEffect(() => {
+        generate();
     },[])
 
     const leaveButtonPressed = () => {
@@ -48,10 +53,17 @@ function Room (props) {
     }
 
     const UpdateShowSettings = {
+        
         showSettings (value) {
             setRoomData({showSettings: value})
         }
         
+    }
+
+    const closeButtonPressed = () => {
+        generate();
+        setRoomData({showSettings: false});
+        console.log('showsettings in closeButtonPressed: '+ roomData.showSettings)
     }
 
     const renderSettings = {
@@ -64,14 +76,15 @@ function Room (props) {
                             votesToSkip={roomData.votesToSkip} 
                             guestCanPause={roomData.guestCanPause}
                             roomCode={roomCode}
-                            
+                            updateCallback={() => {}}
                         />
+                        
                     </Grid>
                     <Grid item xs={12}>
                         <Button 
                             variant="contained" 
                             color="secondary" 
-                            onClick={() => UpdateShowSettings.showSettings(false)}>
+                            onClick={closeButtonPressed}>
                             Close
                         </Button>
                     </Grid>
@@ -82,9 +95,10 @@ function Room (props) {
     
     const renderSettingsButton = {
         settingsButton() {
+            console.log('showsettings in renderSettingsButton: '+ roomData.showSettings)
             return (
                 <Grid item xs={12}>
-                    <Button variant="contained" color="primary" onClick={() => UpdateShowSettings.showSettings(true)}>
+                    <Button variant="contained" color="primary" onClick={() => setRoomData({showSettings: true})}>
                         Settings
                     </Button>
                 </Grid>
@@ -96,6 +110,7 @@ function Room (props) {
 
     console.log('votes: '+ roomData.votesToSkip)
     console.log('guest can pause: '+ roomData.guestCanPause)
+    console.log('ishost: '+ roomData.isHost)
 
     if (roomData.showSettings){
         return renderSettings.settings();
@@ -114,12 +129,12 @@ function Room (props) {
             </Grid>
             <Grid item xs={12}>
                 <Typography variant="h5" component="h5">
-                    Guest can pause: {roomData.guestCanPause.toString()}
+                    Guest can pause: {"" + roomData.guestCanPause}
                 </Typography>
             </Grid>
             <Grid item xs={12}>
                 <Typography variant="h5" component="h5">
-                    Host: {roomData.isHost.toString()}
+                    Host: {"" + roomData.isHost}
                 </Typography>
             </Grid>
             {roomData.isHost ? renderSettingsButton.settingsButton() : null}
