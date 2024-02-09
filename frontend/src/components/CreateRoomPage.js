@@ -54,6 +54,32 @@ function CreateRoomPage (props) {
             .then((data) => {setRoomCode(data.code), navigate('/room/'+ data.code)});
     };
 
+    const renderCreateButton = () => {
+        return (
+            <Grid container spacing={1}>
+                <Grid item xs={12} align="center">
+                <Button color="primary" variant="contained" onClick={handleRoomButtonPressed}>
+                    Create A Room
+                </Button>
+            </Grid>
+            <Grid item xs={12} align="center">
+                <Button color="secondary" variant="contained" to="/" component={Link}>
+                    Back
+                </Button>
+            </Grid>
+            </Grid>
+        );
+    }
+
+    const renderUpdateButton = () => {
+        return (
+            <Grid item xs={12} align="center">
+                <Button color="primary" variant="contained" onClick={handleRoomButtonPressed}>
+                    Update Room
+                </Button>
+            </Grid>
+        );
+    }
     const title = props.update ? "Update Room" : "Create a Room";
     
     return (  
@@ -107,16 +133,7 @@ function CreateRoomPage (props) {
                     </FormHelperText>
                 </FormControl>
             </Grid>
-            <Grid item xs={12} align="center">
-                <Button color="primary" variant="contained" onClick={handleRoomButtonPressed}>
-                    Create A Room
-                </Button>
-            </Grid>
-            <Grid item xs={12} align="center">
-                <Button color="secondary" variant="contained" to="/" component={Link}>
-                    Back
-                </Button>
-            </Grid>
+            {props.update ? renderUpdateButton() : renderCreateButton()}
         </Grid>
     ); 
     
