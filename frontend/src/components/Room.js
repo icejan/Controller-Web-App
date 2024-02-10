@@ -16,7 +16,7 @@ function Room (props) {
     const [roomData, setRoomData] = useState(props.roomData == undefined ? initialState : props.roomData) 
     const{ roomCode } = useParams();
 
-    const generate = () => {
+    const getRoomDetails = () => {
         fetch("/api/get-room" + "?code="+ roomCode)
         .then((response) => {
             if (!response.ok) {
@@ -36,7 +36,7 @@ function Room (props) {
         
     }
     useEffect(() => {
-        generate();
+        getRoomDetails();
     },[])
 
     const leaveButtonPressed = () => {
@@ -61,7 +61,7 @@ function Room (props) {
     }
 
     const closeButtonPressed = () => {
-        generate();
+        getRoomDetails();
         setRoomData({showSettings: false});
         console.log('showsettings in closeButtonPressed: '+ roomData.showSettings)
     }

@@ -6,10 +6,11 @@ import TextField from "@mui/material/TextField";
 import FormHelperText from "@mui/material/FormHelperText";
 import FormControl from "@mui/material/FormControl";
 import { Link, useNavigate } from "react-router-dom";
-import Radio from "@mui/material/Radio";
+import  Radio  from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Collapse from '@mui/material/Collapse';
+import Alert from '@mui/material/Alert';
 
 function CreateRoomPage (props) {
     //{votesToSkip=2, guestCanPause=true, update=false, roomCode=null,updateCallback = () => {} }
@@ -80,6 +81,7 @@ function CreateRoomPage (props) {
                 } else {
                     setErrorMsg("Error Updating Room")
                 }
+                
             })
     };
 
@@ -116,7 +118,15 @@ function CreateRoomPage (props) {
              <Grid item xs={12} align="center">
                 <Typography component='h6' variant='h6'>
                     <Collapse in={errorMsg != "" || successMsg != "" }>
-                        {successMsg}
+                        {successMsg != "" ? (
+                                <Alert severity="success" onClose={() => {setSucessMsg("")}}>
+                                    {successMsg}
+                                </Alert>
+                            ) : (
+                                <Alert severity="error" onClose={() => {setErrorMsg("")}}>
+                                    {errorMsg}
+                                </Alert>
+                            )}
                     </Collapse>
                 </Typography>
             </Grid>
