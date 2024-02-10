@@ -9,26 +9,33 @@ import { Link, useNavigate } from "react-router-dom";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import Collapse from '@mui/material/Collapse';
 
 function CreateRoomPage (props) {
     //{votesToSkip=2, guestCanPause=true, update=false, roomCode=null,updateCallback = () => {} }
+    
     const defaultProps = {
         votesToSkip: 2,
         guestCanPause: true,
         update: false,
         roomCode: null,
         updateCallback: () => {},
+        successMsg: "",
+        errorMsg: "",
     }
 
     //const [defaultVotes, setDefaultVotes] = useState(2);
     const navigate = useNavigate();
 
     
-    const [votesToSkip,setVotesToSkip] = useState(defaultProps.votesToSkip);
-    const [guestCanPause,setGuestCanPause] = useState(defaultProps.guestCanPause);
+    const [votesToSkip,setVotesToSkip] = useState(props.votesToSkip ==  undefined ? defaultProps.votesToSkip : props.votesToSkip);
+    const [guestCanPause,setGuestCanPause] = useState(props.guestCanPause == undefined ? defaultProps.guestCanPause : props.guestCanPause);
 
     const [update, setUpdate] = useState(defaultProps.update);
     const [roomCode, setRoomCode] = useState(defaultProps.roomCode);
+
+    const[successMsg, setSucessMsg] = useState(defaultProps.successMsg);
+    const[errorMsg, setErrorMsg] = useState(defaultProps.errorMsg);
 
     const handleVotesChange = () => {
             setVotesToSkip (event.target.value);
@@ -39,7 +46,7 @@ function CreateRoomPage (props) {
     };
 
     const handleRoomButtonPressed = () => {
-        console.log('Test');
+        //console.log('HandleRoomButtonPressed was called');
         const requestOptions = {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
@@ -48,10 +55,32 @@ function CreateRoomPage (props) {
                 guest_can_pause: guestCanPause,
             })
         };
-        console.log('Test2');
+        //console.log('fetching data now in HandleRoomButtonPressed');
         fetch("/api/create-room", requestOptions)
             .then((response) => response.json())
             .then((data) => {setRoomCode(data.code), navigate('/room/'+ data.code)});
+    };
+
+    const handleUpdateButtonPressed = () => {
+        const requestOptions = {
+            method: "PATCH",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                votes_to_skip: votesToSkip,
+                guest_can_pause: guestCanPause,
+                code: props.roomCode,
+            })
+        };
+
+        //console.log('fetching data now in handleUpdateButtonPressed');
+        fetch("/api/update-room", requestOptions)
+            .then((response) => {
+                if(response.ok) {
+                    setSucessMsg("Room Updated Sucesfully")
+                } else {
+                    setErrorMsg("Error Updating Room")
+                }
+            })
     };
 
     const renderCreateButton = () => {
@@ -74,7 +103,7 @@ function CreateRoomPage (props) {
     const renderUpdateButton = () => {
         return (
             <Grid item xs={12} align="center">
-                <Button color="primary" variant="contained" onClick={handleRoomButtonPressed}>
+                <Button color="primary" variant="contained" onClick={handleUpdateButtonPressed}>
                     Update Room
                 </Button>
             </Grid>
@@ -84,6 +113,13 @@ function CreateRoomPage (props) {
     
     return (  
         <Grid container spacing={1}>
+             <Grid item xs={12} align="center">
+                <Typography component='h6' variant='h6'>
+                    <Collapse in={errorMsg != "" || successMsg != "" }>
+                        {successMsg}
+                    </Collapse>
+                </Typography>
+            </Grid>
             <Grid item xs={12} align="center">
                 <Typography component='h4' variant='h4'>
                     {title}
@@ -96,7 +132,7 @@ function CreateRoomPage (props) {
                     </FormHelperText>
                     <RadioGroup 
                         row 
-                        defaultValue={defaultProps.guestCanPause} 
+                        defaultValue={props.guestCanPause ==  undefined ? defaultProps.guestCanPause : props.guestCanPause} 
                         onChange={handleGuestCanPauseChange}
                     >
                         <FormControlLabel 
@@ -120,7 +156,7 @@ function CreateRoomPage (props) {
                         required={true} 
                         type="number" 
                         onChange={handleVotesChange}
-                        defaultValue={defaultProps.votesToSkip}
+                        defaultValue={props.votesToSkip ==  undefined ? defaultProps.votesToSkip : props.votesToSkip}
                         inputProps={{
                             min: 1,
                             style: {textAlign: "center"},

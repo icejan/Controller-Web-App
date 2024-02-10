@@ -13,7 +13,7 @@ function Room (props) {
         isHost: false,
         showSettings: false,
     }
-    const [roomData, setRoomData] = useState(initialState) 
+    const [roomData, setRoomData] = useState(props.roomData == undefined ? initialState : props.roomData) 
     const{ roomCode } = useParams();
 
     const generate = () => {
@@ -66,12 +66,19 @@ function Room (props) {
         console.log('showsettings in closeButtonPressed: '+ roomData.showSettings)
     }
 
+    
+
     const renderSettings = {
         settings() {
+            
+
+            console.log('votes in renderSettings: '+ props.votesToSkip)
+            console.log('guest can pause in renderSettings: '+ props.guestCanPause)
+            
             return (
                 <Grid container spacing={1} align="center">
                     <Grid item xs={12}>
-                        <CreateRoomPage 
+                        <CreateRoomPage
                             update={true} 
                             votesToSkip={roomData.votesToSkip} 
                             guestCanPause={roomData.guestCanPause}
@@ -98,7 +105,7 @@ function Room (props) {
             console.log('showsettings in renderSettingsButton: '+ roomData.showSettings)
             return (
                 <Grid item xs={12}>
-                    <Button variant="contained" color="primary" onClick={() => setRoomData({showSettings: true})}>
+                    <Button variant="contained" color="primary" onClick={() => setRoomData({showSettings: true, votesToSkip: roomData.votesToSkip, guestCanPause: roomData.guestCanPause})}>
                         Settings
                     </Button>
                 </Grid>
@@ -111,7 +118,8 @@ function Room (props) {
     console.log('votes: '+ roomData.votesToSkip)
     console.log('guest can pause: '+ roomData.guestCanPause)
     console.log('ishost: '+ roomData.isHost)
-
+    console.log('roomcode: ' + roomCode)
+    
     if (roomData.showSettings){
         return renderSettings.settings();
     }
