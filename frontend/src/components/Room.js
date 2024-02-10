@@ -12,14 +12,17 @@ function Room (props) {
         guestCanPause: true,
         isHost: false,
         showSettings: false,
+        spotifyAuthenticated: false,
     }
     const [roomData, setRoomData] = useState(props.roomData == undefined ? initialState : props.roomData) 
     const{ roomCode } = useParams();
 
     const getRoomDetails = () => {
+        console.log('votes before getting room details?: '+ roomData.votesToSkip)
         fetch("/api/get-room" + "?code="+ roomCode)
         .then((response) => {
             if (!response.ok) {
+                
                 navigate('/');
             }
             return response.json()
@@ -31,12 +34,40 @@ function Room (props) {
                 guestCanPause: data.guest_can_pause,
                 isHost: data.is_host,
                 showSettings: false,
-            })  
+                
+            })
+            //console.log('ishost in getroomdetails: '+ data.is_host)
+           
         })
         
     }
+
+    const authenticateSpotify = () => {
+        
+        fetch('/spotify/is-authenticated')
+        .then((response) => response.json())
+        .then((data) => {
+            setRoomData({
+                ...roomData,
+                spotifyAuthenticated: data.status
+            })
+            console.log('votes in authenticatespotify after settingroomdata: '+ roomData.votesToSkip)
+            if (!data.status) {
+                fetch('/spotify/get-auth-url')
+                .then((response) => response.json())
+                .then((data) => {
+                    window.location.replace(data.url);
+                })
+            }
+        })
+
+    }
+
     useEffect(() => {
         getRoomDetails();
+
+        
+
     },[])
 
     const leaveButtonPressed = () => {
@@ -48,6 +79,7 @@ function Room (props) {
         //console.log('Test2');
         fetch("/api/leave-room", requestOptions)
             .then((_response) => {
+                
                 navigate('/');
             });
     }
@@ -113,13 +145,23 @@ function Room (props) {
         }
     };
     
+    console.log('Room data before return statements START')
     console.log('showsettings: '+ roomData.showSettings)
-
     console.log('votes: '+ roomData.votesToSkip)
     console.log('guest can pause: '+ roomData.guestCanPause)
     console.log('ishost: '+ roomData.isHost)
     console.log('roomcode: ' + roomCode)
+    console.log('spotifyAuthenticated ' + roomData.spotifyAuthenticated)
+    console.log('Room data before return statements END')
     
+   // console.log('ishost before checking data.is_host: '+ roomData.isHost)
+    if (roomData.isHost && !roomData.spotifyAuthenticated) {
+            
+        authenticateSpotify();
+    }
+
+    //console.log('votes after checking data.is_host: '+ roomData.votesToSkip)
+
     if (roomData.showSettings){
         return renderSettings.settings();
     }
