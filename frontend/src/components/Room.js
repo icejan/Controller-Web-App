@@ -98,8 +98,6 @@ function Room (props) {
         console.log('showsettings in closeButtonPressed: '+ roomData.showSettings)
     }
 
-    
-
     const renderSettings = {
         settings() {
             
@@ -172,6 +170,7 @@ function Room (props) {
                     Code: {roomCode}
                 </Typography>
             </Grid>
+            
             <Grid item xs={12}>
                 <Typography variant="h5" component="h5">
                     Votes: {roomData.votesToSkip}
@@ -187,6 +186,7 @@ function Room (props) {
                     Host: {"" + roomData.isHost}
                 </Typography>
             </Grid>
+
             {roomData.isHost ? renderSettingsButton.settingsButton() : null}
             <Grid item xs={12}>
                 <Button variant="contained" color="secondary" onClick={leaveButtonPressed}>
