@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { Grid, Button, Typography}  from "@mui/material";
 import CreateRoomPage from './CreateRoomPage';
+import MusicPlayer from './MusicPlayer';
 
 function Room (props) {
     
@@ -13,6 +14,7 @@ function Room (props) {
         isHost: false,
         showSettings: false,
         spotifyAuthenticated: false,
+        song: {}
     }
     const [roomData, setRoomData] = useState(props.roomData == undefined ? initialState : props.roomData) 
     const{ roomCode } = useParams();
@@ -51,7 +53,7 @@ function Room (props) {
                 ...roomData,
                 spotifyAuthenticated: data.status
             })
-            console.log('votes in authenticatespotify after settingroomdata: '+ roomData.votesToSkip)
+            //console.log('votes in authenticatespotify after settingroomdata: '+ roomData.votesToSkip)
             if (!data.status) {
                 fetch('/spotify/get-auth-url')
                 .then((response) => response.json())
@@ -64,11 +66,28 @@ function Room (props) {
     }
 
     useEffect(() => {
+        console.log('Run useEffect');
         getRoomDetails();
 
-        
-
     },[])
+    
+
+    const getCurrentSong = () => {
+        fetch('/spotify/current-song')
+        .then((response) => {
+            if(!response.ok) {
+                return {};
+            } else {
+                return response.json();
+            }
+        }).then((data) => {
+            setRoomData({
+                ...roomData,
+                song: data
+            })
+            console.log(data);
+        })
+    }
 
     const leaveButtonPressed = () => {
         //console.log('Test');
@@ -134,7 +153,7 @@ function Room (props) {
         settingsButton() {
             console.log('showsettings in renderSettingsButton: '+ roomData.showSettings)
             return (
-                <Grid item xs={12}>
+                <Grid item xs={12} align="center">
                     <Button variant="contained" color="primary" onClick={() => setRoomData({showSettings: true, votesToSkip: roomData.votesToSkip, guestCanPause: roomData.guestCanPause})}>
                         Settings
                     </Button>
@@ -151,11 +170,16 @@ function Room (props) {
     console.log('roomcode: ' + roomCode)
     console.log('spotifyAuthenticated ' + roomData.spotifyAuthenticated)
     console.log('Room data before return statements END')
+    console.log('song data: ' + JSON.stringify(roomData.song))
     
    // console.log('ishost before checking data.is_host: '+ roomData.isHost)
     if (roomData.isHost && !roomData.spotifyAuthenticated) {
             
         authenticateSpotify();
+    }
+
+    if (roomData.spotifyAuthenticated) {
+        getCurrentSong();
     }
 
     //console.log('votes after checking data.is_host: '+ roomData.votesToSkip)
@@ -164,31 +188,18 @@ function Room (props) {
         return renderSettings.settings();
     }
     return (
-        <Grid container spacing={1} align="center">
-            <Grid item xs={12}>
+        <Grid container spacing={1}>
+            <Grid item xs={12} align="center">
                 <Typography variant="h4" component="h4">
-                    Code: {roomCode}
+                    Room Code: {roomCode}
                 </Typography>
+            </Grid >
+            <Grid container spacing={0} direction="column" alignItems="center" justify="center">
+                <MusicPlayer {...roomData.song}/>
             </Grid>
             
-            <Grid item xs={12}>
-                <Typography variant="h5" component="h5">
-                    Votes: {roomData.votesToSkip}
-                </Typography>
-            </Grid>
-            <Grid item xs={12}>
-                <Typography variant="h5" component="h5">
-                    Guest can pause: {"" + roomData.guestCanPause}
-                </Typography>
-            </Grid>
-            <Grid item xs={12}>
-                <Typography variant="h5" component="h5">
-                    Host: {"" + roomData.isHost}
-                </Typography>
-            </Grid>
-
             {roomData.isHost ? renderSettingsButton.settingsButton() : null}
-            <Grid item xs={12}>
+            <Grid item xs={12} align="center">
                 <Button variant="contained" color="secondary" onClick={leaveButtonPressed}>
                     Leave Room
                 </Button>
