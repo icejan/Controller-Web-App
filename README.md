@@ -44,11 +44,7 @@ Clone the repo:
 
 ## Features
 
-
-
-https://github.com/icejan/Controller-Web-App/assets/97641242/c45d97cb-149e-481c-9be1-d4c8301d9783
-
-
+https://github.com/icejan/Controller-Web-App/assets/97641242/188357d5-ff5f-4f9a-a702-7d5446ffdc8e
 
 * Users can create a personal room that has a unique roomcode for other users to join
 * The host (creator of the room) can log into spotify and authorize the application to access their account
@@ -56,7 +52,7 @@ https://github.com/icejan/Controller-Web-App/assets/97641242/c45d97cb-149e-481c-
 * If the host accidentally closes their web browser and revisits the homepage, they will be automatically redirected back to their room
 * IF the host leaves the room they created, the room is automatically deleted
 
-https://github.com/icejan/Controller-Web-App/assets/97641242/a7fef054-4757-4ba6-bfbc-f92201003140
+https://github.com/icejan/Controller-Web-App/assets/97641242/84a3571d-da59-44e9-bbac-b94525e66b6d
 
 * The host can update their own room settings anytime, where changes will be applied right away and saved in the server
 
